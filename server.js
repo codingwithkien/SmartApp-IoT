@@ -10,6 +10,7 @@ app.use((req, res, next) => {
 });
 
 let fanStatus = "Off";
+let ledStatus = "Off";
 
 io.on("connection", (socket) => {
   console.log("A user connected");
@@ -19,6 +20,15 @@ io.on("connection", (socket) => {
     io.emit("fanStatus", fanStatus);
     console.log("Fan status:", fanStatus);
   });
+
+  socket.emit("ledStatus", ledStatus);
+  socket.on("toggleLed", () => {
+    ledStatus = ledStatus === "On" ? "Off" : "On";
+    io.emit("ledStatus", ledStatus);
+    console.log("Led status:", ledStatus);
+  });
+
+  
 
   socket.on("disconnect", () => {
     console.log("User disconnected");

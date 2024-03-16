@@ -81,10 +81,10 @@ export default function HomeScreen({ navigation }) {
 
     if (isSwitchEnableLed) {
       setOnLed("Off");
-      alert("LED closed");
+      alert("Light closed");
     } else {
       setOnLed("On");
-      alert("LED opened");
+      alert("Light opened");
     }
 
     setIsSwitchEnableLed((previousState) => !previousState);
