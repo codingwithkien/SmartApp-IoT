@@ -31,6 +31,7 @@ export default function HomeScreen({ navigation }) {
   const [onFan, setOnFan] = useState("Off");
   const [onLed, setOnLed] = useState("Off");
   const [socket, setSocket] = useState(null);
+  const [sensorData, setSensorData] = useState(null);
 
   useEffect(() => {
     const newSocket = io("http://localhost:3000");
@@ -50,6 +51,10 @@ export default function HomeScreen({ navigation }) {
 
     socket.on("ledStatus", (status) => {
       setOnLed(status);
+    });
+
+    socket.on("sensorData", (data) => {
+      setSensorData(data);
     });
 
     return () => {
@@ -115,39 +120,45 @@ export default function HomeScreen({ navigation }) {
       {/* temperature, humidity, co2 */}
       <ScrollView>
         <View className="mt-4 mx-4 space-y-3">
-          <View className="flex-row justify-between">
-            <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
-              <Image
-                source={require("../assets/icons/temperature.png")}
-                className="mx-auto my-2"
-              />
-              <View className="">
-                <Text className="text-center py-2">Temperature</Text>
-                <Text className="text-center pb-4 font-bold">26°c</Text>
+          {sensorData && (
+            <View className="flex-row justify-between">
+              <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
+                <Image
+                  source={require("../assets/icons/temperature.png")}
+                  className="mx-auto my-2"
+                />
+                <View className="">
+                  <Text className="text-center py-2">Temperature</Text>
+                  <Text className="text-center pb-4 font-bold">
+                    {sensorData.temperature}°c
+                  </Text>
+                </View>
               </View>
-            </View>
 
-            <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
-              <Image
-                source={require("../assets/icons/humidity.png")}
-                className="mx-auto my-2"
-              />
-              <View className="">
-                <Text className="text-center py-2">Humidity</Text>
-                <Text className="text-center  font-bold pb-4 ">26°c</Text>
+              <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
+                <Image
+                  source={require("../assets/icons/humidity.png")}
+                  className="mx-auto my-2"
+                />
+                <View className="">
+                  <Text className="text-center py-2">Humidity</Text>
+                  <Text className="text-center  font-bold pb-4 ">
+                    {sensorData.humidity}%
+                  </Text>
+                </View>
+              </View>
+              <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
+                <Image
+                  source={require("../assets/icons/cloud.png")}
+                  className="mx-auto my-2"
+                />
+                <View className="">
+                  <Text className="text-center py-2">Co2</Text>
+                  <Text className="text-center pb-4 font-bold">{sensorData.co2} PPM</Text>
+                </View>
               </View>
             </View>
-            <View className="border-gray-400 border-[0.5px] w-[30%]  bg-white rounded-2xl">
-              <Image
-                source={require("../assets/icons/cloud.png")}
-                className="mx-auto my-2"
-              />
-              <View className="">
-                <Text className="text-center py-2">Co2</Text>
-                <Text className="text-center pb-4 font-bold">600 PPM</Text>
-              </View>
-            </View>
-          </View>
+          )}
         </View>
 
         {/* Choose mode */}
