@@ -33,6 +33,7 @@
         const humidity = Math.floor(Math.random() * (80 - 50 + 1)) + 50; // Giả lập độ ẩm từ 50% đến 80%
         const co2 = Math.floor(Math.random() * (800 - 400 + 1)) + 400; // Giả lập CO2 từ 400 ppm đến 800 ppm
         socket.emit("sensorData", { temperature, humidity, co2 });
+        console.log(`Temperature: ${temperature} - Humidity: ${humidity} - CO2: ${co2}`);
       }, 2000); // Cứ mỗi 2 giây gửi dữ liệu mới về client
 
     
