@@ -34,7 +34,7 @@ export default function HomeScreen({ navigation }) {
   const [sensorData, setSensorData] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("https://smartapp-iot-1.onrender.com");
+    const newSocket = io("https://smartapp-b12cc06c4f80.herokuapp.com/");
     setSocket(newSocket);
 
     return () => {
