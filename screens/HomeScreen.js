@@ -34,7 +34,7 @@ export default function HomeScreen({ navigation }) {
   const [sensorData, setSensorData] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io("https://smartapp-iot-1.onrender.com");
     setSocket(newSocket);
 
     return () => {
@@ -154,7 +154,9 @@ export default function HomeScreen({ navigation }) {
                 />
                 <View className="">
                   <Text className="text-center py-2">Co2</Text>
-                  <Text className="text-center pb-4 font-bold">{sensorData.co2} PPM</Text>
+                  <Text className="text-center pb-4 font-bold">
+                    {sensorData.co2} PPM
+                  </Text>
                 </View>
               </View>
             </View>
