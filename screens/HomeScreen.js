@@ -24,7 +24,9 @@ import {
 import { storeColors } from "../theme";
 import MyRoom from "../components/MyRoom";
 import { io } from "socket.io-client";
+import WebSocket from "react-native-websocket";
 
+const SERVER_URL = "ws://192.168.1.3:8080";
 export default function HomeScreen({ navigation }) {
   const [isSwitchEnableFan, setIsSwitchEnableFan] = useState(false);
   const [isSwitchEnableLed, setIsSwitchEnableLed] = useState(false);
@@ -33,35 +35,28 @@ export default function HomeScreen({ navigation }) {
   const [socket, setSocket] = useState(null);
   const [sensorData, setSensorData] = useState(null);
 
-  useEffect(() => {
-    const newSocket = io("https://smartapp-b12cc06c4f80.herokuapp.com/");
-    setSocket(newSocket);
+  // -----
+  const [serverResponse, setServerResponse] = useState(
+    "Waiting for server response..."
+  );
+  const [messageToSend, setMessageToSend] = useState("");
 
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
+  const handleOnMessage = (message) => {
+    setServerResponse(message.data);
+  };
 
-  useEffect(() => {
-    if (!socket) return;
+  const handleOnError = (error) => {
+    console.error("WebSocket error:", error.nativeEvent.description);
+  };
 
-    socket.on("fanStatus", (status) => {
-      setOnFan(status);
-    });
+  const handleSendMessage = () => {
+    if (websocket) {
+      websocket.send("on");
+    }
+  };
 
-    socket.on("ledStatus", (status) => {
-      setOnLed(status);
-    });
-
-    socket.on("sensorData", (data) => {
-      setSensorData(data);
-    });
-
-    return () => {
-      socket.off("fanStatus");
-      socket.off("ledStatus");
-    };
-  }, [socket]);
+  let websocket;
+  // ----
 
   const toggleSwitchFans = () => {
     if (socket) {
@@ -297,6 +292,20 @@ export default function HomeScreen({ navigation }) {
           </View>
           <View className="my-3">
             <MyRoom />
+          </View>
+          <View
+            className="py-9"
+          >
+            <Text>Server response: {serverResponse}</Text>
+            <View style={{ flexDirection: "row", marginTop: 20 }}>
+              <Button onPress={handleSendMessage} title="Send Message" />
+            </View>
+            <WebSocket
+              ref={(ref) => (websocket = ref)}
+              url={SERVER_URL}
+              onMessage={handleOnMessage}
+              onError={handleOnError}
+            />
           </View>
         </View>
       </ScrollView>

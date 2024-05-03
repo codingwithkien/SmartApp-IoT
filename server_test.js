@@ -1,21 +1,34 @@
 const WebSocket = require("ws");
-const http = require("http");
 
-const server = http.createServer();
-const wss = new WebSocket.Server({ server });
+const PORT = process.env.PORT || 8080;
+const server = new WebSocket.Server({ port: PORT });
 
-wss.on("connection", (ws) => {
-  console.log("WebSocket connection opened");
+server.on("connection", (socket) => {
+  console.log("A new client connected");
 
-  ws.on("message", (message) => {
-    console.log(`Received message: ${message}`);
+  socket.on("message", (message) => {
+    console.log("Received:", message.toString());
+
+    // Kiểm tra và xử lý dữ liệu nhận được từ client
+    if (message.toString() === "on") {
+      // Gửi tin nhắn "on" cho client
+      socket.send("on");
+    } else if (message.toString() === "off") {
+      // Gửi tin nhắn "off" cho client
+      socket.send("off");
+    } else {
+      // Gửi tin nhắn phản hồi nếu lệnh không hợp lệ
+      socket.send("Invalid command");
+    }
   });
 
-  ws.on("close", () => {
-    console.log("WebSocket connection closed");
+  socket.on("close", () => {
+    console.log("Client disconnected");
+  });
+
+  socket.on("error", (error) => {
+    console.error("Socket error:", error);
   });
 });
 
-server.listen(3000, () => {
-  console.log("Server is listening on port 3000");
-});
+console.log(`Server is running on port ${PORT}`);
